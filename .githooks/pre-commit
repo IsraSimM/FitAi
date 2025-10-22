@@ -1,0 +1,18 @@
+#!/bin/sh
+# Pre-commit: formatea y analiza antes de permitir el commit
+
+# Formato
+dart format --set-exit-if-changed .
+if [ $? -ne 0 ]; then
+  echo "[HOOK] dart format encontr? cambios. Ejecuta: dart format ."
+  exit 1
+fi
+
+# An?lisis
+flutter analyze
+if [ $? -ne 0 ]; then
+  echo "[HOOK] flutter analyze report? problemas."
+  exit 1
+fi
+
+exit 0
