@@ -1,0 +1,10 @@
+const String kNs = 'fitai';
+const String kSchemaVersion = '$kNs.schema.version'; // int
+const String kThemeMode = '$kNs.theme.mode'; // 'light'|'dark'|'system'
+const String kLocale = '$kNs.locale'; // 'es'|'en'
+const String kMenuEnabled = '$kNs.menu.enabledIds'; // JSON array of ids
+const String kMenuOrder = '$kNs.menu.order'; // JSON array of ids
+const String kIsFirstRun = '$kNs.flags.isFirstRun'; // bool
+const String kNotifEnabled = '$kNs.flags.notificationsEnabled'; // bool
+const String kTelemetry = '$kNs.telemetry.optIn'; // bool
+const String kMenuDynamic = '$kNs.menu.dynamicEnabled'; // bool
