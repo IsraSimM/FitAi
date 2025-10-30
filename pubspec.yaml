@@ -28,12 +28,23 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  cryptography: ^2.7.0     # AES-GCM 256 y WebCrypto
+  flutter_secure_storage: ^9.2.2  # Guardar la llave (Android Keystore / iOS Keychain)
+
   flutter:
     sdk: flutter
 
+    # Firebase (necesarios por tu código)
+  firebase_core: ^3.6.0
+  firebase_auth: ^5.3.0
+  cloud_firestore: ^5.4.4
+  shared_preferences: ^2.2.2
+
+  cupertino_icons: ^1.0.8  # Flutter's iOS style icons
+  google_sign_in: ^6.2.1
+  flutter_facebook_auth: ^6.0.4
+
   # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +67,11 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/google.png
+    - assets/facebook.png
+    - assets/phone.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
