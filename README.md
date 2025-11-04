@@ -125,11 +125,35 @@ Esta documentación define por completo el alcance funcional, técnico y operati
 3. Instalar dependencias de Dart/Flutter y generar archivos derivados:
    ```bash
    flutter pub get
-   dart run build_runner build --delete-conflicting-outputs
    ```
-4. Verificar el estado del entorno local:
+4. Ajustar carpetas inexistentes:
+   ```
+   assets/
+   ├── animations/
+   ├── icons/
+   ├── images/
+   ```
+4. Ajustar versionado uniforme en gradle:
+   ```
+   fitai\android\app\build.gradle.kts
+   ```
+   Debe tener:
+   ```
+   defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId = "com.example.freet"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        // Raised to satisfy tflite_flutter's minSdk requirement.
+        minSdk = 26
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+    }
+   ```
+4. Verificar la ejecución:
    ```bash
-   flutter doctor -v
+   flutter run
    ```
 
 ### Configuración de Firebase por entorno
