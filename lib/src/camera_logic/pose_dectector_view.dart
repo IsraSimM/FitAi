@@ -2,7 +2,9 @@ import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
-import 'package:fit_ai_app/src/camera_logic/dectector_view.dart';
+import 'dectector_view.dart';
+
+
 
 import 'painters/pose_painter.dart';
 
