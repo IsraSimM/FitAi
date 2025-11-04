@@ -115,7 +115,7 @@ Esta documentación define por completo el alcance funcional, técnico y operati
 ### Configuración inicial del proyecto
 1. Clonar el repositorio y acceder al directorio raíz:
    ```bash
-   git clone https://github.com/<org>/FreeT.git
+   git clone https://github.com/IsraSimM/FreeT.git
    cd FreeT
    ```
 2. Generar las plataformas nativas (solo la primera vez o tras limpiar la carpeta):
