@@ -40,6 +40,9 @@ dependencies:
   either_dart: ^0.2.0
   equatable: ^2.0.5
   collection: ^1.18.0
+    # === Social login ===
+  google_sign_in: ^6.2.1
+  flutter_facebook_auth: ^6.0.4   # ← compatible con http 0.13.x
 
 dev_dependencies:
   flutter_test:

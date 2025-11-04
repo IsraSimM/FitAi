@@ -1,31 +1,76 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
+// Páginas
 import '../../features/dashboard/presentation/dashboard_page.dart';
 import '../../features/evaluation/presentation/evaluation_page.dart';
 import '../../features/more/presentation/more_page.dart';
 import '../../features/onboarding/presentation/onboarding_page.dart';
 import '../../features/routines/presentation/routines_page.dart';
 import '../../features/social/presentation/social_page.dart';
-import '../../services/auth/auth_guard.dart';
 
-/// Definición del router principal basado en GoRouter.
+// Pantalla de sesión
+import '../../sesion/auth/auth.dart';
+
+/// Stream de usuario Firebase
+final authStateProvider = StreamProvider<User?>(
+  (ref) => FirebaseAuth.instance.authStateChanges(),
+);
+
+/// Refresca GoRouter cuando cambie el estado de sesión
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    _sub = stream.asBroadcastStream().listen((_) => notifyListeners());
+  }
+  late final StreamSubscription<dynamic> _sub;
+  @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
+  }
+}
+
+/// Router principal con login antes de onboarding
 GoRouter createRouter(Ref ref) {
-  final authGuard = ref.read(authGuardProvider);
+  final authStream = ref.watch(authStateProvider.stream);
 
   return GoRouter(
-    initialLocation: OnboardingPage.routePath,
-    redirect: authGuard.handleRedirect,
-    routes: <RouteBase>[
+    refreshListenable: GoRouterRefreshStream(authStream),
+    initialLocation: '/auth',
+    redirect: (context, state) {
+      final bool loggedIn = FirebaseAuth.instance.currentUser != null;
+      final bool goingToAuth = state.matchedLocation == '/auth';
+
+      // 🚪 Si NO hay sesión y NO estamos en /auth → manda a /auth
+      if (!loggedIn && !goingToAuth) return '/auth';
+
+      // ✅ Si HAY sesión y estamos en /auth → manda al Onboarding (config)
+      if (loggedIn && goingToAuth) return OnboardingPage.routePath;
+
+      return null;
+    },
+    routes: [
+      // 🔐 Sesión
+      GoRoute(
+        path: '/auth',
+        name: 'auth',
+        builder: (context, state) => const AuthPage(),
+      ),
+
+      // 🏁 Configuración inicial
       GoRoute(
         path: OnboardingPage.routePath,
         name: OnboardingPage.routeName,
         builder: (context, state) => const OnboardingPage(),
       ),
+
+      // 🔄 Resto del flujo con barra inferior
       ShellRoute(
         builder: (context, state, child) => NavigationScaffold(child: child),
-        routes: <RouteBase>[
+        routes: [
           GoRoute(
             path: DashboardPage.routePath,
             name: DashboardPage.routeName,
@@ -57,10 +102,9 @@ GoRouter createRouter(Ref ref) {
   );
 }
 
-/// Scaffold base con barra inferior configurada.
+/// Scaffold con barra inferior
 class NavigationScaffold extends ConsumerWidget {
   const NavigationScaffold({required this.child, super.key});
-
   final Widget child;
 
   static const _destinations = [
@@ -104,17 +148,15 @@ class NavigationScaffold extends ConsumerWidget {
         selectedIndex: currentIndex < 0 ? 0 : currentIndex,
         destinations: _destinations
             .map(
-              (destination) => NavigationDestination(
-                icon: Icon(destination.icon),
-                label: destination.label,
+              (d) => NavigationDestination(
+                icon: Icon(d.icon),
+                label: d.label,
               ),
             )
             .toList(),
         onDestinationSelected: (index) {
           final route = _destinations[index].route;
-          if (route != location) {
-            context.go(route);
-          }
+          if (route != location) context.go(route);
         },
       ),
     );
@@ -127,7 +169,6 @@ class _NavigationDestination {
     required this.icon,
     required this.route,
   });
-
   final String label;
   final IconData icon;
   final String route;
